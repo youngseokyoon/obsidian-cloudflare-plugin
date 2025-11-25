@@ -56,7 +56,7 @@ export default class ObsidianPublish extends Plugin {
 
         this.addCommand({
             id: "publish-page",
-            name: "Publish Page",
+            name: "Publish page",
             checkCallback: (checking: boolean) => {
                 if (!checking) {
                     this.publish()
@@ -75,7 +75,7 @@ export default class ObsidianPublish extends Plugin {
         this.registerDomEvent(document, 'paste', (evt: ClipboardEvent) => {
             const activeView = this.app.workspace.getActiveViewOfType(MarkdownView);
             if (activeView) {
-                this.pasteListener.handlePaste(evt, activeView.editor);
+                void this.pasteListener.handlePaste(evt, activeView.editor);
             }
         }, true); // Use capture phase to intercept before Obsidian handles it
     }
@@ -95,8 +95,7 @@ export default class ObsidianPublish extends Plugin {
         if (!this.imageUploader) {
             new Notice("Image uploader setup failed, please check setting.")
         } else {
-            this.imageTagProcessor.process(ACTION_PUBLISH).then(() => {
-            });
+            void this.imageTagProcessor.process(ACTION_PUBLISH);
         }
     }
 
@@ -109,7 +108,7 @@ export default class ObsidianPublish extends Plugin {
                 this.imageUploader
             );
         } catch (e) {
-            console.log(`Failed to setup image uploader: ${e}`)
+            new Notice(`Failed to setup image uploader: ${e}`)
         }
     }
 }

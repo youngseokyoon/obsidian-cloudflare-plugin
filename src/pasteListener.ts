@@ -46,9 +46,12 @@ export default class PasteListener {
                 const filename = `${filenameBase}${randomString}.${extension}`;
 
                 // Save to local vault first if enabled (independent of upload)
-                let localPath: string | null = null;
+                let localPath = "";
                 if (settings.keepLocalFile) {
-                    localPath = await this.saveFileToVault(file, filename);
+                    const savedPath = await this.saveFileToVault(file, filename);
+                    if (savedPath) {
+                        localPath = savedPath;
+                    }
                 }
 
                 // Calculate width parameter based on sizing mode
@@ -74,9 +77,9 @@ export default class PasteListener {
                         const imgUrl = await uploader.upload(file, filename);
                         imageLink = `![${altText}${widthParam}](${imgUrl})`;
                         new Notice(`Uploaded ${filename}`);
-                    } catch (e) {
-                        new Notice(`Failed to upload ${filename}: ${e.message || e}`);
-                        console.error(`Failed to upload ${filename}:`, e);
+                    } catch (error: unknown) {
+                        const errorMsg = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
+                        new Notice(`Failed to upload ${filename}: ${errorMsg}`);
 
                         // Fallback to local path if available
                         if (localPath) {
@@ -110,13 +113,13 @@ export default class PasteListener {
         return result;
     }
 
-    private async saveFileToVault(file: File, filename: string): Promise<string | null> {
+    private async saveFileToVault(file: File, filename: string): Promise<string> {
         try {
             const arrayBuffer = await file.arrayBuffer();
 
             // Get attachment folder path from vault config
-            // @ts-ignore: config is not defined in vault api, but available
-            const attachmentFolderPath = this.app.vault.config.attachmentFolderPath || '.';
+            interface VaultWithConfig { config: { attachmentFolderPath?: string } }
+            const attachmentFolderPath = (this.app.vault as unknown as VaultWithConfig).config.attachmentFolderPath || '.';
             const activeFile = this.app.workspace.getActiveFile();
 
             let targetPath: string;
@@ -147,9 +150,10 @@ export default class PasteListener {
             await this.app.vault.adapter.writeBinary(targetPath, arrayBuffer);
 
             return targetPath;
-        } catch (e) {
-            console.error(`Failed to save file to vault: ${filename}`, e);
-            return null;
+        } catch (error: unknown) {
+            const errorMsg = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
+            new Notice(`Failed to save file to vault: ${filename} : ${errorMsg}`, 5000);
+            throw error; // Re-throw to indicate failure
         }
     }
 

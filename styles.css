@@ -1,8 +1,35 @@
 /*
-
 This CSS file will be included with your plugin, and
 available in the app when your plugin is enabled.
-
-If your plugin does not need CSS, delete this file.
-
 */
+
+/* Upload Progress Modal Styles */
+.upload-progress-modal .progress-bar {
+    width: 0%;
+    /* Initial width, updated dynamically in TypeScript */
+    height: 8px;
+    background-color: var(--interactive-accent);
+    border-radius: 4px;
+    transition: width 0.3s ease-in-out;
+}
+
+.upload-progress-modal .progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background-color: var(--background-modifier-border);
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.upload-progress-modal .progress-section {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.upload-progress-modal .image-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    padding: 8px;
+}

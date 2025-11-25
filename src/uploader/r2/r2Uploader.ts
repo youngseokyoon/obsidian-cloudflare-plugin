@@ -31,7 +31,7 @@ export default class R2Uploader implements ImageUploader {
     }
 
     // Use fullPath (which contains the unique timestamped name from PasteListener) instead of image.name
-    var path = UploaderUtils.generateName(this.pathTmpl, fullPath);
+    let path = UploaderUtils.generateName(this.pathTmpl, fullPath);
     path = path.replace(/^\/+/, ''); // remove the /
     const params = {
       Bucket: this.bucket,
@@ -42,7 +42,6 @@ export default class R2Uploader implements ImageUploader {
     return new Promise((resolve, reject) => {
       this.r2.upload(params, (err, data) => {
         if (err) {
-          console.error("R2 Upload Error:", err);
           reject(err);
         } else {
           // Use the path (Key) we generated, as data.Location might include the bucket name in a way that's hard to parse reliably

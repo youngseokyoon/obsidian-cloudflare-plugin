@@ -11,7 +11,6 @@ const NESTED_SETTINGS_STYLE = {
     marginBottom: '20px'
 } as const;
 
-const SECTION_HEADING_STYLE = 'margin-top: 0; color: var(--text-muted);';
 
 // Image sizing configuration
 const IMAGE_WIDTH_PRESETS = [80, 100, 150, 200, 300] as const;
@@ -44,7 +43,7 @@ export default class PublishSettingTab extends PluginSettingTab {
     display(): void {
         const { containerEl } = this;
         containerEl.empty();
-        containerEl.createEl("h1", { text: "Cloudflare Plugin settings" });
+        new Setting(containerEl).setHeading().setName("Cloudflare plugin settings");
 
         const mainSettingsContainer = containerEl.createDiv();
         this.r2SettingsContainer = containerEl.createDiv();
@@ -60,8 +59,8 @@ export default class PublishSettingTab extends PluginSettingTab {
      * Called when the settings tab is hidden.
      * Saves settings and reinitializes the image uploader.
      */
-    async hide(): Promise<void> {
-        await this.plugin.saveSettings();
+    hide(): void {
+        void this.plugin.saveSettings();
         this.plugin.setupImageUploader();
     }
 
@@ -70,7 +69,7 @@ export default class PublishSettingTab extends PluginSettingTab {
      */
     private createAutoUploadToggle(container: HTMLElement): void {
         new Setting(container)
-            .setName("Enable Auto Upload Plugin")
+            .setName("Enable auto upload plugin")
             .setDesc("Automatically upload images when pasting them into the editor.")
             .addToggle(toggle =>
                 toggle
@@ -91,10 +90,7 @@ export default class PublishSettingTab extends PluginSettingTab {
         this.r2SettingsContainer.style.marginTop = NESTED_SETTINGS_STYLE.marginTop;
         this.r2SettingsContainer.style.marginBottom = NESTED_SETTINGS_STYLE.marginBottom;
 
-        this.r2SettingsContainer.createEl('h3', {
-            text: 'Cloudflare R2 Configuration',
-            attr: { style: SECTION_HEADING_STYLE }
-        });
+        new Setting(this.r2SettingsContainer).setHeading().setName("Cloudflare plugin settings");
     }
 
     /**
@@ -118,28 +114,28 @@ export default class PublishSettingTab extends PluginSettingTab {
      */
     private createR2CredentialSettings(container: HTMLElement): void {
         new Setting(container)
-            .setName('Cloudflare R2 Access Key ID')
-            .setDesc('Your Cloudflare R2 access key ID')
+            .setName("Access key ID")
+            .setDesc("Access key identifier for your account")
             .addText(text => text
-                .setPlaceholder('Enter your access key ID')
+                .setPlaceholder("Enter access key ID")
                 .setValue(this.plugin.settings.r2Setting?.accessKeyId || '')
                 .onChange(value => this.plugin.settings.r2Setting.accessKeyId = value)
             );
 
         new Setting(container)
-            .setName('Cloudflare R2 Secret Access Key')
-            .setDesc('Your Cloudflare R2 secret access key')
+            .setName("Secret access key")
+            .setDesc("Secret access key for your account")
             .addText(text => text
-                .setPlaceholder('Enter your secret access key')
+                .setPlaceholder("Enter secret access key")
                 .setValue(this.plugin.settings.r2Setting?.secretAccessKey || '')
                 .onChange(value => this.plugin.settings.r2Setting.secretAccessKey = value)
             );
 
         new Setting(container)
-            .setName('Cloudflare R2 Endpoint')
-            .setDesc('Your Cloudflare R2 endpoint URL (e.g., https://account-id.r2.cloudflarestorage.com)')
+            .setName("Endpoint")
+            .setDesc("Endpoint URL (e.g., https://account-id.r2.cloudflarestorage.com)")
             .addText(text => text
-                .setPlaceholder('Enter your R2 endpoint')
+                .setPlaceholder("Enter r2 endpoint")
                 .setValue(this.plugin.settings.r2Setting?.endpoint || '')
                 .onChange(value => this.plugin.settings.r2Setting.endpoint = value)
             );
@@ -150,16 +146,16 @@ export default class PublishSettingTab extends PluginSettingTab {
      */
     private createR2StorageSettings(container: HTMLElement): void {
         new Setting(container)
-            .setName('Cloudflare R2 Bucket Name')
-            .setDesc('Your Cloudflare R2 bucket name')
+            .setName("Bucket name")
+            .setDesc("Bucket name for storing images")
             .addText(text => text
-                .setPlaceholder('Enter your bucket name')
+                .setPlaceholder("Enter bucket name")
                 .setValue(this.plugin.settings.r2Setting?.bucketName || '')
                 .onChange(value => this.plugin.settings.r2Setting.bucketName = value)
             );
 
         new Setting(container)
-            .setName("Target Path")
+            .setName("Target path")
             .setDesc("The path to store image.\\nSupport {year} {mon} {day} {random} {filename} vars. For example, /{year}/{mon}/{day}/{filename} with uploading pic.jpg, it will store as /2023/06/08/pic.jpg.")
             .addText(text => text
                 .setPlaceholder("Enter path")
@@ -168,7 +164,7 @@ export default class PublishSettingTab extends PluginSettingTab {
             );
 
         new Setting(container)
-            .setName("R2.dev URL, Custom Domain Name")
+            .setName("R2.dev URL, custom domain name")
             .setDesc("You can use the R2.dev URL such as https://pub-xxxx.r2.dev here, or custom domain. If the custom domain name is example.com, you can use https://example.com/pic.jpg to access pic.img.")
             .addText(text => text
                 .setPlaceholder("Enter domain name")
@@ -269,8 +265,8 @@ export default class PublishSettingTab extends PluginSettingTab {
         }
 
         new Setting(container)
-            .setName("Use image name as Alt Text")
-            .setDesc("Whether to use image name as Alt Text with '-' and '_' replaced with space.")
+            .setName("Use image name as alt text")
+            .setDesc("Whether to use image name as alt text with '-' and '_' replaced with space.")
             .addToggle(toggle =>
                 toggle
                     .setValue(this.plugin.settings.imageAltText)

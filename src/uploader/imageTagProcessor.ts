@@ -4,8 +4,8 @@ import ImageUploader from "./imageUploader";
 import { PublishSettings } from "../publish";
 import UploadProgressModal from "../ui/uploadProgressModal";
 
-const MD_REGEX = /\!\[(.*)\]\((.*?\.(png|jpg|jpeg|gif|svg|webp|excalidraw))\)/g;
-const WIKI_REGEX = /\!\[\[(.*?\.(png|jpg|jpeg|gif|svg|webp|excalidraw))(|.*)?\]\]/g;
+const MD_REGEX = /!\[(.*)]\((.*?\.(png|jpg|jpeg|gif|svg|webp|excalidraw))\)/g;
+const WIKI_REGEX = /!\[\[(.*?\.(png|jpg|jpeg|gif|svg|webp|excalidraw))(|.*)?]]/g;
 const PROPERTIES_REGEX = /^---[\s\S]+?---\n/;
 
 interface Image {
@@ -74,7 +74,7 @@ export default class ImageTagProcessor {
                             }
                             resolve(image);
                         })
-                        .catch(e => {
+                        .catch((e: Error & { error?: string }) => {
                             // Also update progress on failed upload
                             if (this.progressModal) {
                                 this.progressModal.updateProgress(image.name, false);
@@ -84,9 +84,9 @@ export default class ImageTagProcessor {
                             reject(new Error(errorMessage));
                         });
                 }));
-            } catch (error) {
-                console.error(`Failed to read file: ${image.path}`, error);
-                new Notice(`Failed to read file: ${image.path}`, 5000);
+            } catch (error: unknown) {
+                const errorMsg = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
+                new Notice(`Failed to read file: ${image.path}, error: ${errorMsg}`, 5000);
             }
         }
 
@@ -98,8 +98,8 @@ export default class ImageTagProcessor {
             return;
         }
 
-        return Promise.all(promises.map(p => p.catch(e => {
-            console.error(e);
+        return Promise.all(promises.map(p => p.catch((e: Error) => {
+            new Notice(e.message, 5000);
             return null; // Return null for failed promises to continue processing
         }))).then(results => {
             // Modal will auto-close when all uploads complete
@@ -124,7 +124,7 @@ export default class ImageTagProcessor {
 
             switch (action) {
                 case ACTION_PUBLISH:
-                    navigator.clipboard.writeText(value);
+                    void navigator.clipboard.writeText(value);
                     new Notice("Copied to clipboard");
                     break;
                 // more cases
@@ -153,8 +153,9 @@ export default class ImageTagProcessor {
                 this.processMatched(decodedName, match[0], images);
 
             }
-        } catch (error) {
-            console.error("Error processing image lists:", error);
+        } catch (error: unknown) {
+            const errorMsg = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
+            new Notice(`Error processing image lists: ${errorMsg}`, 5000);
         }
 
         return images;
@@ -173,8 +174,9 @@ export default class ImageTagProcessor {
                     url: '',
                 });
             }
-        } catch (error) {
-            console.error(`Failed to process image: ${src}`, error);
+        } catch (error: unknown) {
+            const errorMsg = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
+            new Notice(`Failed to process image: ${src}, error: ${errorMsg}`, 5000);
         }
     }
 
@@ -184,8 +186,9 @@ export default class ImageTagProcessor {
             imageName;
 
         if (pathName.indexOf('/') < 0) {
-            // @ts-ignore: config is not defined in vault api, but available
-            const attachmentFolderPath = this.app.vault.config.attachmentFolderPath;
+            // Type assertion for vault config which is not fully typed in the API
+            interface VaultWithConfig { config: { attachmentFolderPath: string } }
+            const attachmentFolderPath = (this.app.vault as unknown as VaultWithConfig).config.attachmentFolderPath;
             pathName = path.join(attachmentFolderPath, pathName);
             if (attachmentFolderPath.startsWith('.')) {
                 pathName = './' + pathName;

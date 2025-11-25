@@ -54,13 +54,14 @@ export default class PasteListener {
                 // Try to upload to R2 if auto-upload is enabled
                 let imageLink: string;
                 const altText = settings.imageAltText ? filename.replace(/\.[^/.]+$/, "") : "";
+                const widthParam = settings.imageWidth > 0 ? `|${settings.imageWidth}` : "";
 
                 if (settings.autoUploadOnPaste) {
                     new Notice(`Uploading ${filename}...`);
                     try {
                         const uploader = this.getImageUploader();
                         const imgUrl = await uploader.upload(file, filename);
-                        imageLink = `![${altText}](${imgUrl})`;
+                        imageLink = `![${altText}${widthParam}](${imgUrl})`;
                         new Notice(`Uploaded ${filename}`);
                     } catch (e) {
                         new Notice(`Failed to upload ${filename}: ${e.message || e}`);
@@ -68,7 +69,7 @@ export default class PasteListener {
 
                         // Fallback to local path if available
                         if (localPath) {
-                            imageLink = `![[${filename}]]`;
+                            imageLink = `![[${filename}${widthParam}]]`;
                         } else {
                             return; // Can't insert anything
                         }
@@ -76,7 +77,7 @@ export default class PasteListener {
                 } else {
                     // No upload, use local path
                     if (localPath) {
-                        imageLink = `![[${filename}]]`;
+                        imageLink = `![[${filename}${widthParam}]]`;
                     } else {
                         return; // Can't insert anything
                     }

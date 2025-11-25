@@ -178,6 +178,31 @@ export default class PublishSettingTab extends PluginSettingTab {
                     .onChange(value => this.plugin.settings.keepLocalFile = value)
             );
 
+        const imageWidthSetting = new Setting(container)
+            .setName("Image display width")
+            .setDesc(`Current: ${this.plugin.settings.imageWidth}px (Options: 80, 100, 150, 200, 300)`);
+
+        imageWidthSetting.addSlider(slider => {
+            const widths = [80, 100, 150, 200, 300];
+            slider
+                .setLimits(0, 4, 1)
+                .setValue(this.getSliderValueFromWidth(this.plugin.settings.imageWidth))
+                .onChange(value => {
+                    this.plugin.settings.imageWidth = widths[value];
+                    imageWidthSetting.setDesc(`Current: ${widths[value]}px (Options: 80, 100, 150, 200, 300)`);
+                });
+        });
+
+        imageWidthSetting.addExtraButton(button =>
+            button
+                .setIcon("reset")
+                .setTooltip("Reset to default (150)")
+                .onClick(() => {
+                    this.plugin.settings.imageWidth = 150;
+                    this.display();
+                })
+        );
+
         new Setting(container)
             .setName("Use image name as Alt Text")
             .setDesc("Whether to use image name as Alt Text with '-' and '_' replaced with space.")
@@ -204,5 +229,14 @@ export default class PublishSettingTab extends PluginSettingTab {
                     .setValue(this.plugin.settings.ignoreProperties)
                     .onChange(value => this.plugin.settings.ignoreProperties = value)
             );
+    }
+
+    /**
+     * Helper method to convert image width to slider value
+     */
+    private getSliderValueFromWidth(width: number): number {
+        const widths = [80, 100, 150, 200, 300];
+        const index = widths.indexOf(width);
+        return index >= 0 ? index : 2; // Default to 150 (index 2)
     }
 }

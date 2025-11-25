@@ -17,6 +17,7 @@ export interface PublishSettings {
     ignoreProperties: boolean;
     autoUploadOnPaste: boolean;
     keepLocalFile: boolean;
+    imageWidth: number;
     r2Setting: R2Setting;
 }
 
@@ -26,6 +27,7 @@ const DEFAULT_SETTINGS: PublishSettings = {
     ignoreProperties: true,
     autoUploadOnPaste: false,
     keepLocalFile: true,
+    imageWidth: 150,
     r2Setting: {
         accessKeyId: "",
         secretAccessKey: "",

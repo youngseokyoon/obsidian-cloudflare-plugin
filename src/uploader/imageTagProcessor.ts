@@ -4,8 +4,8 @@ import ImageUploader from "./imageUploader";
 import { PublishSettings } from "../publish";
 import UploadProgressModal from "../ui/uploadProgressModal";
 
-const MD_REGEX = /\!\[(.*)\]\((.*?\.(png|jpg|jpeg|gif|svg|webp|excalidraw))\)/g;
-const WIKI_REGEX = /\!\[\[(.*?\.(png|jpg|jpeg|gif|svg|webp|excalidraw))(|.*)?\]\]/g;
+const MD_REGEX = /!\[(.*)]\((.*?\.(png|jpg|jpeg|gif|svg|webp|excalidraw))\)/g;
+const WIKI_REGEX = /!\[\[(.*?\.(png|jpg|jpeg|gif|svg|webp|excalidraw))(|.*)?]]/g;
 const PROPERTIES_REGEX = /^---[\s\S]+?---\n/;
 
 interface Image {

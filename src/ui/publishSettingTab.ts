@@ -44,7 +44,7 @@ export default class PublishSettingTab extends PluginSettingTab {
     display(): void {
         const { containerEl } = this;
         containerEl.empty();
-        containerEl.createEl("h1", { text: "Cloudflare Plugin settings" });
+        new Setting(containerEl).setHeading().setName("Cloudflare plugin settings");
 
         const mainSettingsContainer = containerEl.createDiv();
         this.r2SettingsContainer = containerEl.createDiv();
@@ -70,7 +70,7 @@ export default class PublishSettingTab extends PluginSettingTab {
      */
     private createAutoUploadToggle(container: HTMLElement): void {
         new Setting(container)
-            .setName("Enable Auto Upload Plugin")
+            .setName("Enable auto upload plugin")
             .setDesc("Automatically upload images when pasting them into the editor.")
             .addToggle(toggle =>
                 toggle
@@ -92,7 +92,7 @@ export default class PublishSettingTab extends PluginSettingTab {
         this.r2SettingsContainer.style.marginBottom = NESTED_SETTINGS_STYLE.marginBottom;
 
         this.r2SettingsContainer.createEl('h3', {
-            text: 'Cloudflare R2 Configuration',
+            text: 'Cloudflare R2 configuration',
             attr: { style: SECTION_HEADING_STYLE }
         });
     }
@@ -118,7 +118,7 @@ export default class PublishSettingTab extends PluginSettingTab {
      */
     private createR2CredentialSettings(container: HTMLElement): void {
         new Setting(container)
-            .setName('Cloudflare R2 Access Key ID')
+            .setName('Cloudflare R2 access key ID')
             .setDesc('Your Cloudflare R2 access key ID')
             .addText(text => text
                 .setPlaceholder('Enter your access key ID')
@@ -127,7 +127,7 @@ export default class PublishSettingTab extends PluginSettingTab {
             );
 
         new Setting(container)
-            .setName('Cloudflare R2 Secret Access Key')
+            .setName('Cloudflare R2 secret access key')
             .setDesc('Your Cloudflare R2 secret access key')
             .addText(text => text
                 .setPlaceholder('Enter your secret access key')
@@ -136,7 +136,7 @@ export default class PublishSettingTab extends PluginSettingTab {
             );
 
         new Setting(container)
-            .setName('Cloudflare R2 Endpoint')
+            .setName('Cloudflare R2 endpoint')
             .setDesc('Your Cloudflare R2 endpoint URL (e.g., https://account-id.r2.cloudflarestorage.com)')
             .addText(text => text
                 .setPlaceholder('Enter your R2 endpoint')
@@ -150,7 +150,7 @@ export default class PublishSettingTab extends PluginSettingTab {
      */
     private createR2StorageSettings(container: HTMLElement): void {
         new Setting(container)
-            .setName('Cloudflare R2 Bucket Name')
+            .setName('Cloudflare R2 bucket name')
             .setDesc('Your Cloudflare R2 bucket name')
             .addText(text => text
                 .setPlaceholder('Enter your bucket name')
@@ -159,7 +159,7 @@ export default class PublishSettingTab extends PluginSettingTab {
             );
 
         new Setting(container)
-            .setName("Target Path")
+            .setName("Target path")
             .setDesc("The path to store image.\\nSupport {year} {mon} {day} {random} {filename} vars. For example, /{year}/{mon}/{day}/{filename} with uploading pic.jpg, it will store as /2023/06/08/pic.jpg.")
             .addText(text => text
                 .setPlaceholder("Enter path")
@@ -168,7 +168,7 @@ export default class PublishSettingTab extends PluginSettingTab {
             );
 
         new Setting(container)
-            .setName("R2.dev URL, Custom Domain Name")
+            .setName("R2.dev URL, custom domain name")
             .setDesc("You can use the R2.dev URL such as https://pub-xxxx.r2.dev here, or custom domain. If the custom domain name is example.com, you can use https://example.com/pic.jpg to access pic.img.")
             .addText(text => text
                 .setPlaceholder("Enter domain name")

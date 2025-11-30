@@ -14,8 +14,8 @@ echo -e "${GREEN}📦 Obsidian Community Plugin Submission Script${NC}"
 echo ""
 
 # Configuration
-PLUGIN_ID="cloudflare-image-uploader"
-PLUGIN_NAME="Cloudflare Image Uploader"
+PLUGIN_ID="cloudflare-image-auto-uploader"
+PLUGIN_NAME="Cloudflare Image Auto Uploader"
 PLUGIN_AUTHOR="youngseok.yoon"
 PLUGIN_DESCRIPTION="Upload images to Cloudflare Image with automatic paste, smart sizing, and local fallback."
 PLUGIN_REPO="youngseokyoon/obsidian-cloudflare-plugin"

@@ -1,7 +1,7 @@
 {
   "id": "cloudflare-image-auto-uploader",
   "name": "Cloudflare Image Auto Uploader",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "minAppVersion": "0.15.0",
   "description": "Upload images to Cloudflare Image with automatic paste, smart sizing, and local fallback.",
   "author": "youngseok.yoon",
